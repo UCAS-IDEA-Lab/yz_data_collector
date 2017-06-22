@@ -1,0 +1,12 @@
+[UNIT]
+Description=YouZhen Data Collector Agent
+After=syslog.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/yz_agent
+
+[Install]
+WantedBy=multi-user.target
+
