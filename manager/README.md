@@ -35,5 +35,6 @@ systemctl status yz_manager
 ### Log
 Default is stored at /var/log/yz_manager.log.
 
-You can configure it at yz_manager.settings.py.
+### Configuration
+Configuration file is located at /etc/yz_manager.conf
 

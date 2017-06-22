@@ -35,5 +35,6 @@ systemctl status yz_agent
 ### Log
 Default is stored at /var/log/yz_agent.log.
 
-You can configure it at yz_agent.settings.py.
+### Configuration
+Configuration file is located at /etc/yz_agent.conf
 
