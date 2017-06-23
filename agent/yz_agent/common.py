@@ -3,10 +3,13 @@
 # Thread model
 from threading import Thread, Condition
 import logging
+import abc
 
 LOG = logging.getLogger()
 
 class MyThread(Thread):
+    __metaclass__ = abc.ABCMeta
+
     def __init__(self, name, tid):
         super(MyThread, self).__init__()
         self.threadID = tid
@@ -22,7 +25,13 @@ class MyThread(Thread):
             if self._pause:
                 self._cond.wait()
             self._cond.release()
-            self.work()
+            self._work()
+
+    @abc.abstractmethod
+    def _work(self):
+        """
+        Should be implemented by subclasses.
+        """
     
     @property
     def cond(self):

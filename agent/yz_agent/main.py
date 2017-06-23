@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from settings import log_file_path, log_level, api_port
+from remote_call import register_myself
 import api as api_server
 
 import logging
@@ -28,6 +29,11 @@ logging.getLogger('').addHandler(console)
 LOG = logging.getLogger(__name__)
 
 def main():
+    ret = register_myself()
+    if not ret['success']:
+        LOG.error(ret['data'])
+        sys.exit(1)
+
     while True:
         try:
             # TODO: Start Agent
