@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# API
+# Agent Configuration 
 api_port = '36563'
+batch = 10
+data_path = '/var/log/yz'
 
 # Log
 log_file_path = '/var/log/yz_agent.log'
