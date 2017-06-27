@@ -104,3 +104,17 @@ def do_post(url, data):
         LOG.error("POST %s: %s" % (url, e))
     return ret
 
+# Date calc
+Small_Month = [4, 6, 9, 11]
+Big_Month = [1, 3, 5, 7, 8, 10, 12]
+
+def next_day(year, month, day):
+    """
+    Get the date of next day
+    :param year: the year of today, e.g. '2017'
+    :param month: the month of today, e.g. '12'
+    :param day: the day of today, e.g. '12'
+    :return: '2017', '12', '13'
+    """
+    pass
+

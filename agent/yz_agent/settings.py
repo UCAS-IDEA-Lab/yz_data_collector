@@ -4,6 +4,8 @@
 api_port = '36563'
 batch = 10
 data_path = '/var/log/yz'
+log_start_date = None # '2017/03/04'
+wait_for_new_data = 10
 
 # Log
 log_file_path = '/var/log/yz_agent.log'
