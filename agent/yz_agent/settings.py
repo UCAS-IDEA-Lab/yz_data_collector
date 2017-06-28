@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from os import path
+
 # Agent Configuration 
 api_port = '36563'
 batch = 10
@@ -9,13 +11,14 @@ wait_for_new_data = 10
 
 # Log
 log_file_path = '/var/log/yz_agent.log'
-log_level = 'INFO'
+log_level = 'DEBUG'
 
 # Manager
 manager_url = 'http://127.0.0.1:45954'
 
 # Data upload
-upload_url = 'http://127.0.0.1:54999'
+upload_url = ['http://127.0.0.1:54999','http://127.0.0.1:54999']
+load_balance_strategy = 'rr' # 'rr', 'ra' (round-robin, random)
 report_url = None
 
 if path.exists('/etc/yz_agent.conf'):

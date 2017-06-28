@@ -21,11 +21,14 @@ class MyThread(Thread):
     def run(self):
         LOG.info("%s-%d started" % (self.name, self.threadID))
         while not self._exit:
-            self._cond.acquire()
-            if self._pause:
-                self._cond.wait()
-            self._cond.release()
-            self._work()
+            try:
+                self._cond.acquire()
+                if self._pause:
+                    self._cond.wait()
+                self._cond.release()
+                self._work()
+            except Exception, e:
+                LOG.error(e)
 
     @abc.abstractmethod
     def _work(self):
@@ -108,6 +111,18 @@ def do_post(url, data):
 Small_Month = [4, 6, 9, 11]
 Big_Month = [1, 3, 5, 7, 8, 10, 12]
 
+def is_leap_year(year):
+    if (year % 4) == 0:
+        if (year % 100) == 0:
+            if (year % 400) == 0:
+                return True
+            else:
+                return False
+        else:
+            return True
+    else:
+        return False
+
 def next_day(year, month, day):
     """
     Get the date of next day
@@ -116,5 +131,21 @@ def next_day(year, month, day):
     :param day: the day of today, e.g. '12'
     :return: '2017', '12', '13'
     """
-    pass
+    year = int(year)
+    month = int(month)
+    day = int(day)
+    if month in Small_Month and day >= 30 \
+            or month in Big_Month and day >= 31 \
+            or month == 2 and is_leap_year(year) and day >= 29 \
+            or month == 2 and not is_leap_year(year) and day >= 28:
+        day = 1
+        if month == 12:
+            month = 1
+            year += 1
+        else:
+            month += 1
+    else:
+        day += 1
+
+    return str(year), '%02d' % month, '%02d' % day
 
