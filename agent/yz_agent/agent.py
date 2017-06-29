@@ -21,7 +21,7 @@ DATA_TYPE = {
 class Agent(MyThread):
     def __init__(self, name, no, data_type):
         """
-        _file_name: data file's name, e.g. "2017/04/04/${data_type}/044"
+        _file_name: data file's name, e.g. "2017/04/04/${data_type}/00044"
         _offset: offset inside the data file
         """
         LOG.info('Initialize Agent %s-%d' % (name, no))
@@ -47,7 +47,7 @@ class Agent(MyThread):
             start_date = log_start_date
             if start_date is None:
                 start_date = time.strftime('%Y/%m/%d', time.localtime())
-            name = '%s/%s/001' % (start_date, DATA_TYPE[t])
+            name = '%s/%s/00000' % (start_date, DATA_TYPE[t])
             offset = 0
             return name, offset
 
@@ -69,7 +69,9 @@ class Agent(MyThread):
     def _data_file_init(self):
         while True:
             try:
-                data_fd = open('%s/%s' % (data_path, self._data_file_name), 'rb')
+                data_file = '%s/%s' % (data_path, self._data_file_name)
+                data_fd = open(data_file, 'rb')
+                LOG.info('Loading data from %s...' % data_file)
                 for _ in xrange(self._offset):
                     data_fd.readline()
                 self._id_prefix = self._data_file_name.replace('/', '')
@@ -82,7 +84,9 @@ class Agent(MyThread):
     def _next_file(self):
 
         def _new_data_file(next_file):
-            if path.exists(next_file):
+            data_file = '%s/%s' % (data_path, self._data_file_name)
+            LOG.debug('Next file: %s' % data_file)
+            if path.exists(data_file):
                 self._data_file_name = next_file
                 self._offset = 0
                 self._data_fd = self._data_file_init()
@@ -91,15 +95,15 @@ class Agent(MyThread):
 
         info = self._data_file_name.split('/')
         while True:
-            # Same day, next file
-            info[4] = '%03d' % (int(info[4]) + 1)
+            info[4] = '%05d' % (int(info[4]) + 1)
             if _new_data_file('/'.join(info)):
+                LOG.debug('Same day, next file')
                 return
             
-            # Next day
             info[0], info[1], info[2] = next_day(info[0], info[1], info[2])
-            info[4] = '001'
+            info[4] = '00000'
             if _new_data_file('/'.join(info)):
+                LOG.debug('Next day, next file')
                 return
 
             # No new data file
@@ -108,6 +112,7 @@ class Agent(MyThread):
     def _update_record(self):
         self._rec_fd.seek(0)
         self._rec_fd.write('%32s%16d' % (self._data_file_name, self._offset))
+        self._rec_fd.flush()
 
     def _work(self):
         self._scratch()
@@ -133,12 +138,13 @@ class Agent(MyThread):
                 if ret['success']:
                     _ += 1
                     self._offset += 1
-                    LOG.debug('Message send, offset: %5d' % self._offset)
+                    # LOG.debug('Message send, offset: %5d' % self._offset)
                 else:
                     LOG.debug('Send failed, seek to last line')
                     self._data_fd.seek(-len(line), 1)
         # Make sure at most a batch size of data re-transmitted
-        self._rec_fd.flush()
+        self._update_record()
+        LOG.debug('%d message send' % batch)
 
     def _transform(self, raw_str):
         """
