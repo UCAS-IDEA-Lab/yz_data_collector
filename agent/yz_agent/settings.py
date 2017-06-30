@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from os import path
+import random
 
 # Agent Configuration 
 api_port = '36563'
@@ -21,12 +22,25 @@ upload_url = ['http://127.0.0.1:54999','http://127.0.0.1:54999']
 load_balance_strategy = 'rr' # 'rr', 'ra' (round-robin, random)
 report_url = None
 
-if path.exists('/etc/yz_agent.conf'):
-    with open('/etc/yz_agent.conf') as f:
+# Get configuration from the configure file
+conf_file_path = '/etc/yz_agent.conf'
+if path.exists(conf_file_path):
+    with open(conf_file_path, 'r') as f:
         conf = globals()
         for line in f:
             if not re.match('\s*#', line) \
                     and not re.match('\s+', line):
                 l = re.split('=', line)
-                conf[l[0].strip()] = l[1].strip()
+                # TODO: handle each key
+                key = l[0].strip()
+                if key == 'batch' or key == 'wait_for_new_data':
+                    conf[key] = int(l[1].strip())
+                elif key == 'upload_url':
+                    conf[key] = [url.strip() for url in l[1].strip().split(',')]
+                else:
+                    conf[key] = l[1].strip()
+
+random.shuffle(upload_url)
+# NOTE: just for debug
+print globals()
 

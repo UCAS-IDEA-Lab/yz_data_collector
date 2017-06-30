@@ -24,6 +24,7 @@ systemctl status yz_agent
 
 ### Test
 ```shell
+yz_test_data_gen -h
 ```
 
 ### Stop && Check
