@@ -1,4 +1,4 @@
-[UNIT]
+[Unit]
 Description=YouZhen Data Collector Agent
 After=syslog.target
 

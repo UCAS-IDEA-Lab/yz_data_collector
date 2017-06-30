@@ -2,3 +2,7 @@
 *.pyc
 *.log
 *.pyw
+
+agent/build
+agent/dist
+agent/yz_agent.egg-info

@@ -2,6 +2,7 @@
 
 from os import path
 import random
+import re
 
 # Agent Configuration 
 api_port = '36563'
@@ -12,7 +13,7 @@ wait_for_new_data = 10
 
 # Log
 log_file_path = '/var/log/yz_agent.log'
-log_level = 'DEBUG'
+log_level = 'INFO'
 
 # Manager
 manager_url = 'http://127.0.0.1:45954'
@@ -42,5 +43,5 @@ if path.exists(conf_file_path):
 
 random.shuffle(upload_url)
 # NOTE: just for debug
-print globals()
+# print globals()
 

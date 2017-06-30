@@ -18,13 +18,13 @@ _log_level = {
 
 logging.basicConfig(\
         level=_log_level[log_level], \
-        format='[%(asctime)s] %(filename)-12s: %(levelname)-8s %(message)s', \
+        format='[%(asctime)s] [%(levelname)-8s] [%(threadName)-16s] %(filename)-12s(line%(lineno)4d): %(message)s', \
         datefmt='%m-%d %H:%M', \
         filename=log_file_path, \
         filemode='w')
 console = logging.StreamHandler()
 console.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(threadName)-16s: [%(filename)-12s(line %(lineno)-3d)] %(levelname)-8s %(message)s')
+formatter = logging.Formatter('%(threadName)-16s: [%(filename)-12s(line%(lineno)4d)] %(levelname)-8s %(message)s')
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
 

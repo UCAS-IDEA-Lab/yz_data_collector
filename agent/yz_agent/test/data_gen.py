@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys
-sys.path.append('/root/workspace/yz_data_collector/agent')
+# import sys
+# sys.path.append('/root/workspace/yz_data_collector/agent')
 
 import random
 import datetime

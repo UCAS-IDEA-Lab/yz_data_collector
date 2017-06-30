@@ -135,6 +135,7 @@ class Agent(MyThread):
                 continue
             else:
                 ret = upload(self._transform(line))
+                # LOG.debug('Message send, ret: %s' % ret)
                 if ret['success']:
                     _ += 1
                     self._offset += 1
