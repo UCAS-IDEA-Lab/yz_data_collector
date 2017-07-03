@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from common import do_get, do_post
-from settings import manager_url, upload_url
+from settings import manager_url, upload_url, load_balance_strategy
 
 import json
 import logging
@@ -25,9 +25,11 @@ def upload(data):
     # tmp_timer += 1
     # return {'success': True}
 
-    # TODO: load balance based on strategy, maintain a client pool
     if data is None:
         return {'success': False}
+    # TODO: load balance based on strategy, maintain a client pool
+    # if load_balance_strategy == 'ra':
     url = random.choice(upload_url)
-    return do_post(url, [{'headers': {}, 'body': json.dumps(data)}])
+    return do_post(url, [{'headers': {}, 'body': json.dumps(data)}], \
+            headers={"Content-Type":"application/json","Connection":"keep-alive"})
 

@@ -67,9 +67,11 @@ class MyThread(Thread):
 import requests
 import json
 
-def do_get(url):
+client = requests.Session()
+
+def do_get(url, **kwarg):
     try:
-        re = requests.get(url, timeout=2)
+        re = requests.get(url, timeout=2, **kwarg)
         ret = {
             'success': True,
             'status': re.status_code,
@@ -91,9 +93,9 @@ def do_get(url):
         LOG.error("GET %s: %s" % (url, e))
     return ret
 
-def do_post(url, data):
+def do_post(url, data, **kwarg):
     try:
-        re = requests.post(url, data=json.dumps(data), timeout=2)
+        re = client.post(url, data=json.dumps(data), timeout=2, **kwarg)
         ret = {
             'success': True,
             'status': re.status_code
