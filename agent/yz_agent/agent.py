@@ -42,6 +42,10 @@ class Agent(MyThread):
         return self._delay
 
     def _rec_init(self, data_type):
+        """
+        1. Get start from last record;
+        2. If not, get start from today.
+        """
 
         def _new_record(t):
             start_date = log_start_date
