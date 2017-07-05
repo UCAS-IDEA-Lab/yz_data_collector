@@ -3,15 +3,15 @@ syntax = "proto2";
 package youzhen;
 
 message Headers {
-  required string topic = 1;
-}
-
-message FlumeMsg {
-  required Headers headers = 1;
-  required bytes body = 2;
+  optional string topic = 1;
 }
 
 message FlumeMsgList {
+  message FlumeMsg {
+    required Headers headers = 1;
+    required bytes body = 2;
+  }
+
   repeated FlumeMsg msg = 1;
 }
 

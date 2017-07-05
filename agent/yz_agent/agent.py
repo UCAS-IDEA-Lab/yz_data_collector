@@ -144,7 +144,7 @@ class Agent(MyThread):
                 time.sleep(wait_for_new_data)
                 continue
             else:
-                ret = upload(self._transform(line), topic=self.data_type)
+                ret = upload(self._transform(line), self.data_type)
                 # LOG.debug('Message send, ret: %s' % ret)
                 if ret['success']:
                     _ += 1

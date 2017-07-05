@@ -7,7 +7,6 @@ from serialize.flume_msg_pb2 import FlumeMsgList
 import json
 import logging
 import random
-from google.protobuf import json_format as jf
 
 LOG = logging.getLogger()
 
@@ -17,7 +16,7 @@ def register_myself():
     return do_post(url, data)
 
 tmp_timer = 0
-def upload(data, **kw):
+def upload(data, topic):
     """
     :param data: string, message body
     """
@@ -35,9 +34,10 @@ def upload(data, **kw):
     # TODO: load balance based on strategy, maintain a client pool
     # if load_balance_strategy == 'ra':
     url = random.choice(upload_url)
-    pb = FlumeMsgList()
-    # TODO: must be a json string!
-    jf.Parse([{'headers': kw, 'body': data}], pb)
-    return do_post(url, , \
+    msg_list = FlumeMsgList()
+    msg = msg_list.msg.add()
+    msg.headers.topic = topic
+    msg.body = data
+    return do_post(url, msg_list.SerializeToString(), \
             headers={"Content-Type":"application/octet-stream","Connection":"keep-alive"})
 

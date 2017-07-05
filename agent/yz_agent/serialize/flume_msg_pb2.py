@@ -13,7 +13,7 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='flume_msg.proto',
   package='youzhen',
-  serialized_pb='\n\x0f\x66lume_msg.proto\x12\x07youzhen\"\x18\n\x07Headers\x12\r\n\x05topic\x18\x01 \x02(\t\";\n\x08\x46lumeMsg\x12!\n\x07headers\x18\x01 \x02(\x0b\x32\x10.youzhen.Headers\x12\x0c\n\x04\x62ody\x18\x02 \x02(\x0c\".\n\x0c\x46lumeMsgList\x12\x1e\n\x03msg\x18\x01 \x03(\x0b\x32\x11.youzhen.FlumeMsg')
+  serialized_pb='\n\x0f\x66lume_msg.proto\x12\x07youzhen\"\x18\n\x07Headers\x12\r\n\x05topic\x18\x01 \x01(\t\"x\n\x0c\x46lumeMsgList\x12+\n\x03msg\x18\x01 \x03(\x0b\x32\x1e.youzhen.FlumeMsgList.FlumeMsg\x1a;\n\x08\x46lumeMsg\x12!\n\x07headers\x18\x01 \x02(\x0b\x32\x10.youzhen.Headers\x12\x0c\n\x04\x62ody\x18\x02 \x02(\x0c')
 
 
 
@@ -27,7 +27,7 @@ _HEADERS = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='topic', full_name='youzhen.Headers.topic', index=0,
-      number=1, type=9, cpp_type=9, label=2,
+      number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=unicode("", "utf-8"),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -46,22 +46,22 @@ _HEADERS = _descriptor.Descriptor(
 )
 
 
-_FLUMEMSG = _descriptor.Descriptor(
+_FLUMEMSGLIST_FLUMEMSG = _descriptor.Descriptor(
   name='FlumeMsg',
-  full_name='youzhen.FlumeMsg',
+  full_name='youzhen.FlumeMsgList.FlumeMsg',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='headers', full_name='youzhen.FlumeMsg.headers', index=0,
+      name='headers', full_name='youzhen.FlumeMsgList.FlumeMsg.headers', index=0,
       number=1, type=11, cpp_type=10, label=2,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='body', full_name='youzhen.FlumeMsg.body', index=1,
+      name='body', full_name='youzhen.FlumeMsgList.FlumeMsg.body', index=1,
       number=2, type=12, cpp_type=9, label=2,
       has_default_value=False, default_value="",
       message_type=None, enum_type=None, containing_type=None,
@@ -76,10 +76,9 @@ _FLUMEMSG = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=54,
-  serialized_end=113,
+  serialized_start=115,
+  serialized_end=174,
 )
-
 
 _FLUMEMSGLIST = _descriptor.Descriptor(
   name='FlumeMsgList',
@@ -98,20 +97,20 @@ _FLUMEMSGLIST = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[],
+  nested_types=[_FLUMEMSGLIST_FLUMEMSG, ],
   enum_types=[
   ],
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=115,
-  serialized_end=161,
+  serialized_start=54,
+  serialized_end=174,
 )
 
-_FLUMEMSG.fields_by_name['headers'].message_type = _HEADERS
-_FLUMEMSGLIST.fields_by_name['msg'].message_type = _FLUMEMSG
+_FLUMEMSGLIST_FLUMEMSG.fields_by_name['headers'].message_type = _HEADERS
+_FLUMEMSGLIST_FLUMEMSG.containing_type = _FLUMEMSGLIST;
+_FLUMEMSGLIST.fields_by_name['msg'].message_type = _FLUMEMSGLIST_FLUMEMSG
 DESCRIPTOR.message_types_by_name['Headers'] = _HEADERS
-DESCRIPTOR.message_types_by_name['FlumeMsg'] = _FLUMEMSG
 DESCRIPTOR.message_types_by_name['FlumeMsgList'] = _FLUMEMSGLIST
 
 class Headers(_message.Message):
@@ -120,14 +119,14 @@ class Headers(_message.Message):
 
   # @@protoc_insertion_point(class_scope:youzhen.Headers)
 
-class FlumeMsg(_message.Message):
-  __metaclass__ = _reflection.GeneratedProtocolMessageType
-  DESCRIPTOR = _FLUMEMSG
-
-  # @@protoc_insertion_point(class_scope:youzhen.FlumeMsg)
-
 class FlumeMsgList(_message.Message):
   __metaclass__ = _reflection.GeneratedProtocolMessageType
+
+  class FlumeMsg(_message.Message):
+    __metaclass__ = _reflection.GeneratedProtocolMessageType
+    DESCRIPTOR = _FLUMEMSGLIST_FLUMEMSG
+
+    # @@protoc_insertion_point(class_scope:youzhen.FlumeMsgList.FlumeMsg)
   DESCRIPTOR = _FLUMEMSGLIST
 
   # @@protoc_insertion_point(class_scope:youzhen.FlumeMsgList)
