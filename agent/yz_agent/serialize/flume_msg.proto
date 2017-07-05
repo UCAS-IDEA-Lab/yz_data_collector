@@ -1,0 +1,17 @@
+syntax = "proto2";
+
+package youzhen;
+
+message Headers {
+  required string topic = 1;
+}
+
+message FlumeMsg {
+  required Headers headers = 1;
+  required bytes body = 2;
+}
+
+message FlumeMsgList {
+  repeated FlumeMsg msg = 1;
+}
+

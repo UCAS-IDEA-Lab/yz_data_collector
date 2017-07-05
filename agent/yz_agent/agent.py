@@ -3,12 +3,15 @@
 from common import MyThread, next_day
 from settings import batch, data_path, log_start_date, wait_for_new_data
 from remote_call import upload
+from serialize.exp_pb2 import ExpMsg
+from serialize.exp_state_pb2 import ExpStateMsg
 
 import time
 import logging
 import re
 import json
 from os import path
+from google.protobuf import json_format as jf
 
 LOG = logging.getLogger()
 
@@ -19,7 +22,11 @@ DATA_TYPE = {
 }
 
 class Agent(MyThread):
-    def __init__(self, name, no, data_type):
+
+    serialize_class = None
+    data_type = None
+
+    def __init__(self, name, no):
         """
         _file_name: data file's name, e.g. "2017/04/04/${data_type}/00044"
         _offset: offset inside the data file
@@ -27,9 +34,8 @@ class Agent(MyThread):
         LOG.info('Initialize Agent %s-%d' % (name, no))
         super(Agent, self).__init__(name, no)
 
-        self._rec_fd, self._data_file_name, self._offset = self._rec_init(data_type)
+        self._rec_fd, self._data_file_name, self._offset = self._rec_init(self.data_type)
         self._data_fd = self._data_file_init()
-        self._type = data_type # 'ExpressContract', 'ExpressContractState'
         self._delay = 0
     
     def __del__(self):
@@ -138,7 +144,7 @@ class Agent(MyThread):
                 time.sleep(wait_for_new_data)
                 continue
             else:
-                ret = upload(self._transform(line))
+                ret = upload(self._transform(line), topic=self.data_type)
                 # LOG.debug('Message send, ret: %s' % ret)
                 if ret['success']:
                     _ += 1
@@ -156,12 +162,18 @@ class Agent(MyThread):
         Transform data to message type, and serialize using protobuf.
         """
         try:
-            return {
+            msg = json.dumps({
                 'id': '%s#%d' % (self._id_prefix, self._offset),
                 'data': json.loads(raw_str),
-                'type': self._type,
+                'type': self.data_type,
                 'usage': 'upload'
-            }
+            })
+            if self.serialize_class is None:
+                return msg
+            else:
+                pb = self.serialize_class()
+                pb = jf.Parse(msg, pb)
+                return pb.SerializeToString()
         except ValueError, e:
             LOG.error(e)
             return None
@@ -177,6 +189,14 @@ class Agent(MyThread):
         Accumulate self._delay, if it is smaller than 10
         """
         pass
+
+class ExpAgent(Agent):
+    serialize_class = ExpMsg
+    data_type = 'ExpressContract'
+
+class ExpStateAgent(Agent):
+    serialize_class = ExpStateMsg
+    data_type = 'ExpressContractState'
 
 class ErrorHandleAgent(Agent):
     """

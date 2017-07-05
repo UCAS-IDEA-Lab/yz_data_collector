@@ -95,7 +95,7 @@ def do_get(url, **kwarg):
 
 def do_post(url, data, **kwarg):
     try:
-        re = client.post(url, data=json.dumps(data), timeout=2, **kwarg)
+        re = client.post(url, data=data, timeout=2, **kwarg)
         ret = {
             'success': True,
             'status': re.status_code
