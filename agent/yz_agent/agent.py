@@ -162,6 +162,7 @@ class Agent(MyThread):
         Transform data to message type, and serialize using protobuf.
         """
         try:
+            # TODO: use simple message format
             msg = json.dumps({
                 'id': '%s#%d' % (self._id_prefix, self._offset),
                 'data': json.loads(raw_str),

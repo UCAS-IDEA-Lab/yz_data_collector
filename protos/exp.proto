@@ -56,7 +56,7 @@ message ExpMsg {
   required string usage = 4;
 }
 
-/* message ExpMsg { */
+/* message ExpMsgSimple { */
   /* required string id = 1; */
   /* required string data = 2; */
   /* required string type = 3; */
