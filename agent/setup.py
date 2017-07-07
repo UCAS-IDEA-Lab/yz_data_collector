@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.join(HERE, 'yz_agent'))
 def main():
     setup_args = dict(
         name="yz_agent",
-        version="0.5.2",
+        version="0.5.3",
         description="Data collect agent",
         author="CannedFish Liang",
         author_email="lianggy0719@126.com",
