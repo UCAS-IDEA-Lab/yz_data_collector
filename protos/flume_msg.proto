@@ -1,0 +1,20 @@
+syntax = "proto2";
+
+package youzhen;
+
+option java_package = "com.iscas";
+option java_outer_classname = "FlumeMsgListProtos";
+
+message Headers {
+  optional string topic = 1;
+}
+
+message FlumeMsgList {
+  message FlumeMsg {
+    required Headers headers = 1;
+    required bytes body = 2;
+  }
+
+  repeated FlumeMsg msg = 1;
+}
+

@@ -3,23 +3,25 @@
 from common import MyThread, next_day
 from settings import batch, data_path, log_start_date, wait_for_new_data
 from remote_call import upload
+from serialize.msg_pb2 import MsgBody as PbMsgBody
+from serialize.json_msg import MsgBody as JsonMsgBody
 
 import time
 import logging
 import re
 import json
 from os import path
+from google.protobuf import json_format as jf
 
 LOG = logging.getLogger()
 
-DATA_TYPE = {
-    'ErrorHandle': '00',
-    'ExpressContract': '01',
-    'ExpressContractState': '02'
-}
-
 class Agent(MyThread):
-    def __init__(self, name, no, data_type):
+
+    serialize_class = JsonMsgBody
+    data_type = None
+    data_type_code = None
+
+    def __init__(self, name, no):
         """
         _file_name: data file's name, e.g. "2017/04/04/${data_type}/00044"
         _offset: offset inside the data file
@@ -27,9 +29,8 @@ class Agent(MyThread):
         LOG.info('Initialize Agent %s-%d' % (name, no))
         super(Agent, self).__init__(name, no)
 
-        self._rec_fd, self._data_file_name, self._offset = self._rec_init(data_type)
+        self._rec_fd, self._data_file_name, self._offset = self._rec_init()
         self._data_fd = self._data_file_init()
-        self._type = data_type # 'ExpressContract', 'ExpressContractState'
         self._delay = 0
     
     def __del__(self):
@@ -41,32 +42,32 @@ class Agent(MyThread):
     def interval(self):
         return self._delay
 
-    def _rec_init(self, data_type):
+    def _rec_init(self):
         """
         1. Get start from last record;
         2. If not, get start from today.
         """
 
-        def _new_record(t):
+        def _new_record(tc):
             start_date = log_start_date
             if start_date is None:
                 start_date = time.strftime('%Y/%m/%d', time.localtime())
-            name = '%s/%s/00000' % (start_date, DATA_TYPE[t])
+            name = '%s/%s/00000' % (start_date, tc)
             offset = 0
             return name, offset
 
-        rec_file_name = '/var/lib/yz_agent/offset_%s.rec' % DATA_TYPE[data_type]
+        rec_file_name = '/var/lib/yz_agent/offset_%s.rec' % self.data_type_code
         try:
             rec_fd = open(rec_file_name, 'rb+')
             _, data_file_name, data_file_offset = re.split('\s+', rec_fd.read())
         except IOError, e:
             LOG.warning(e)
             rec_fd = open(rec_file_name, 'wb+')
-            data_file_name, data_file_offset = _new_record(data_type)
+            data_file_name, data_file_offset = _new_record(self.data_type_code)
         except ValueError, e:
             LOG.error(e)
             LOG.error('Empty in record file')
-            data_file_name, data_file_offset = _new_record(data_type)
+            data_file_name, data_file_offset = _new_record(self.data_type_code)
 
         return rec_fd, data_file_name, int(data_file_offset)
 
@@ -138,7 +139,7 @@ class Agent(MyThread):
                 time.sleep(wait_for_new_data)
                 continue
             else:
-                ret = upload(self._transform(line))
+                ret = upload(self._transform(line), self.data_type)
                 # LOG.debug('Message send, ret: %s' % ret)
                 if ret['success']:
                     _ += 1
@@ -156,12 +157,12 @@ class Agent(MyThread):
         Transform data to message type, and serialize using protobuf.
         """
         try:
-            return {
-                'id': '%s#%d' % (self._id_prefix, self._offset),
-                'data': json.loads(raw_str),
-                'type': self._type,
-                'usage': 'upload'
-            }
+            pb = self.serialize_class()
+            pb.id = '%s#%d' % (self._id_prefix, self._offset)
+            pb.data = raw_str
+            pb.type = self.data_type
+            pb.usage = 'upload'
+            return pb.SerializeToString()
         except ValueError, e:
             LOG.error(e)
             return None
@@ -178,12 +179,28 @@ class Agent(MyThread):
         """
         pass
 
+# 
+# 'ErrorHandle': '00',
+# 'ExpressContract': '01',
+# 'ExpressContractState': '02'
+# 
+class ExpAgent(Agent):
+    serialize_class = PbMsgBody
+    data_type = 'ExpressContract'
+    data_type_code = '01'
+
+class ExpStateAgent(Agent):
+    serialize_class = PbMsgBody
+    data_type = 'ExpressContractState'
+    data_type_code = '02'
+
 class ErrorHandleAgent(Agent):
     """
     Handle Message Reupload
     """
-    def __init__(self, name, no):
-        super(ErrorHandleAgent, name, no, 'ErrorHandle')
+    serialize_class = PbMsgBody
+    data_type = 'ErrorHandle'
+    data_type_code = '00'
 
     def _rec_init(self):
         pass

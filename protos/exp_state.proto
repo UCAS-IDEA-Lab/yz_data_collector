@@ -1,0 +1,38 @@
+syntax = "proto2";
+
+package youzhen;
+
+message ExpState {
+
+  message Info {
+    required string logisticproviderid = 1;
+    required string mailno = 2;
+  }
+
+  message State {
+    required double time = 1;
+    required string desc = 2;
+    required string city = 3;
+    required string facilitytype = 4;
+    required string facilityno = 5;
+    required string facilityname = 6;
+    required string action = 7;
+  }
+
+  message Contact {
+    required string contacter = 1;
+    required string contactphone = 2;
+  }
+
+  required Info info = 1;
+  required State state = 2;
+  required Contact contact = 3;
+}
+
+// message ExpStateMsg {
+//   required string id = 1;
+//   required ExpState data = 2;
+//   required string type = 3;
+//   required string usage = 4;
+// }
+

@@ -2,6 +2,7 @@
 
 from common import do_get, do_post
 from settings import manager_url, upload_url, load_balance_strategy
+from serialize.flume_msg_pb2 import FlumeMsgList
 
 import json
 import logging
@@ -15,7 +16,10 @@ def register_myself():
     return do_post(url, data)
 
 tmp_timer = 0
-def upload(data):
+def upload(data, topic):
+    """
+    :param data: string, message body
+    """
     # NOTE: Debug code
     # if data is None:
         # return {'success': False}
@@ -30,6 +34,10 @@ def upload(data):
     # TODO: load balance based on strategy, maintain a client pool
     # if load_balance_strategy == 'ra':
     url = random.choice(upload_url)
-    return do_post(url, [{'headers': {}, 'body': json.dumps(data)}], \
-            headers={"Content-Type":"application/json","Connection":"keep-alive"})
+    msg_list = FlumeMsgList()
+    msg = msg_list.msg.add()
+    msg.headers.topic = topic
+    msg.body = data
+    return do_post(url, msg_list.SerializeToString(), \
+            headers={"Content-Type":"application/octet-stream","Connection":"keep-alive"})
 

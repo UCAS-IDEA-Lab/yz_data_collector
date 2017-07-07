@@ -1,0 +1,59 @@
+syntax = "proto2";
+
+package youzhen;
+
+message Exp {
+  
+  message Info {
+    required string logisticproviderid = 1;
+    required string mailno = 2;
+    required string mailtype = 3;
+    required string weight = 4;
+    required string sencitycode = 5;
+    required string reccitycode = 6;
+    required string senareacode = 7;
+    required string recareacode = 8;
+    required double inserttime = 9;
+  }
+
+  message Send {
+    required string senname = 1;
+    required string senmobile = 2;
+    required string senphone = 3;
+    required string senprov = 4;
+    required string sencity = 5;
+    required string sencounty = 6;
+    required string senaddress = 7;
+  }
+
+  message Recv {
+    required string recname = 1;
+    required string recmobile = 2;
+    required string recphone = 3;
+    required string recprov = 4;
+    required string reccity = 5;
+    required string reccounty = 6;
+    required string recaddress = 7;
+  }
+
+  message Pkg {
+    required string typeofcontents = 1;
+    required string nameofcoutents = 2;
+    required string mailcode = 3;
+    required string recdatetime = 4;
+    required string insurancevalue = 5;
+  }
+
+  required Info info = 1;
+  required Send send = 2;
+  required Recv recv = 3;
+  required Pkg pkg = 4;
+}
+
+// message ExpMsg {
+//   required string id = 1;
+//   required Exp data = 2;
+//   required string type = 3;
+//   required string usage = 4;
+// }
+
