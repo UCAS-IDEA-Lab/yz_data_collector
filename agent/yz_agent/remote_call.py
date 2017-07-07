@@ -15,7 +15,8 @@ def register_myself():
     data = {}
     return do_post(url, data)
 
-tmp_timer = 0
+# tmp_timer = 0
+rr_num = 0
 def upload(data, topic):
     """
     :param data: string, message body
@@ -31,13 +32,19 @@ def upload(data, topic):
 
     if data is None:
         return {'success': False}
-    # TODO: load balance based on strategy, maintain a client pool
-    # if load_balance_strategy == 'ra':
-    url = random.choice(upload_url)
+
+    if load_balance_strategy == 'rr':
+        global rr_num
+        url = upload_url[rr_num]
+        rr_num = (rr_num + 1) % len(upload_url)
+    else:
+        url = random.choice(upload_url)
+
     msg_list = FlumeMsgList()
     msg = msg_list.msg.add()
     msg.headers.topic = topic
     msg.body = data
+
     return do_post(url, msg_list.SerializeToString(), \
             headers={"Content-Type":"application/octet-stream","Connection":"keep-alive"})
 
