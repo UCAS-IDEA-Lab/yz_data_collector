@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from common import MyThread, next_day
-from settings import batch, data_path, log_start_date, wait_for_new_data
+from settings import batch, data_path, log_start_date, wait_for_new_data, msg_batch
 from remote_call import upload
 from serialize.msg_pb2 import MsgBody as PbMsgBody
 from serialize.json_msg import MsgBody as JsonMsgBody
@@ -129,25 +129,29 @@ class Agent(MyThread):
         """
         _ = 0
         while _ < batch:
-            line = self._data_fd.readline()
-            if line.startswith('END'):
-                LOG.debug('Handle the end of a data file')
-                self._next_file()
-                continue
-            elif line == '':
+            lines = self._data_fd.readlines(msg_batch)
+            msg_num = len(lines)
+            if msg_num == 0:
                 LOG.debug('No new data')
                 time.sleep(wait_for_new_data)
-                continue
             else:
-                ret = upload(self._transform(line), self.data_type)
+                file_end = False
+                if lines[-1].startswith('END'):
+                    lines.pop()
+                    file_end = True
+                ret = upload(map(self._transform, lines), self.data_type)
                 # LOG.debug('Message send, ret: %s' % ret)
                 if ret['success']:
-                    _ += 1
-                    self._offset += 1
+                    _ += msg_num
+                    self._offset += msg_num
                     # LOG.debug('Message send, offset: %5d' % self._offset)
+                    if file_end:
+                        LOG.debug('Handle the end of a data file')
+                        self._next_file()
                 else:
                     LOG.debug('Send failed, seek to last line')
-                    self._data_fd.seek(-len(line), 1)
+                    size = reduce(lambda x, y: x+y, [len(line) for line in lines])
+                    self._data_fd.seek(-size, 1)
         # Make sure at most a batch size of data re-transmitted
         self._update_record()
         LOG.debug('%d message send' % batch)
