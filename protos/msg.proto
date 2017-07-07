@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package youzhen;
+
+message MsgBody {
+  required string id = 1;
+  required string data = 2;
+  required string type = 3;
+  required string usage = 4;
+}
+
