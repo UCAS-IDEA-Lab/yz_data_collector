@@ -154,7 +154,7 @@ class Agent(MyThread):
                     self._data_fd.seek(-size, 1)
         # Make sure at most a batch size of data re-transmitted
         self._update_record()
-        LOG.debug('%d message send' % batch)
+        LOG.debug('%d message send' % _)
 
     def _transform(self, raw_str):
         """

@@ -2,6 +2,9 @@ syntax = "proto2";
 
 package youzhen;
 
+option java_package = "com.iscas";
+option java_outer_classname = "MsgProtos";
+
 message MsgBody {
   required string id = 1;
   required string data = 2;
