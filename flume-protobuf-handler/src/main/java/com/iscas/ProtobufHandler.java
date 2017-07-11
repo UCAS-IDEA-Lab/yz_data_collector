@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.iscas.FlumeMsgListProtos.FlumeMsgList;
 import com.iscas.FlumeMsgListProtos.Headers;
+import com.iscas.MsgProtos.MsgBody;
+import com.googlecode.protobuf.format.JsonFormat;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -24,6 +26,7 @@ import java.io.IOException;
 public class ProtobufHandler implements HTTPSourceHandler {
 
   private static final Logger LOG = LoggerFactory.getLogger(ProtobufHandler.class);
+  private static JsonFormat jsonFormat = new JsonFormat();
 
   @Override
   public List<Event> getEvents(HttpServletRequest request) throws HTTPBadRequestException, Exception {
@@ -46,7 +49,9 @@ public class ProtobufHandler implements HTTPSourceHandler {
         eventHeaders.put("topic", headers.getTopic());
       }
 
-      events.add(EventBuilder.withBody(msg.getBody().toByteArray(), eventHeaders));
+      events.add(EventBuilder.withBody(
+            jsonFormat.printToString(MsgBody.parseFrom(msg.getBody())).getBytes("UTF-8"), 
+            eventHeaders));
     }
 
     return events;
