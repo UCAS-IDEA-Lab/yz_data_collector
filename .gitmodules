@@ -1,0 +1,3 @@
+[submodule "DataCleaner"]
+	path = DataCleaner
+	url = git@github.com:CannedFish/DataCleaner.git
