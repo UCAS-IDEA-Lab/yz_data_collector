@@ -139,7 +139,7 @@ class Agent(MyThread):
                 if lines[-1].startswith('END'):
                     lines.pop()
                     file_end = True
-                ret = upload(map(self._transform, lines), self.data_type)
+                ret = upload(map(self._transform, lines, range(len(lines))[::-1]), self.data_type)
                 # LOG.debug('Message send, ret: %s' % ret)
                 if ret['success']:
                     _ += msg_num
@@ -156,13 +156,13 @@ class Agent(MyThread):
         self._update_record()
         LOG.debug('%d message send' % _)
 
-    def _transform(self, raw_str):
+    def _transform(self, raw_str, sub_off):
         """
         Transform data to message type, and serialize using protobuf.
         """
         try:
             pb = self.serialize_class()
-            pb.id = '%s#%d' % (self._id_prefix, self._offset)
+            pb.id = '%s#%d' % (self._id_prefix, self._offset-sub_off)
             pb.data = raw_str
             pb.type = self.data_type
             pb.usage = 'upload'
