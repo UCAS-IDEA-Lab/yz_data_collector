@@ -11,19 +11,19 @@ urls = (
     '/api/agent/(\w*)', 'Agent',
     '/api/agent/(\w+)/(\w+)', 'AgentAction',
     '/api/handlers', 'Handlers',
-    '/api/Handler/(\w*)', 'Handler',
+    '/api/handler/(\w*)', 'Handler',
 )
 
 class Agents:
     def GET(self):
-        pass
+        return web.ok()
 
 class Agent:
-    def POST(self):
-        pass
+    def POST(self, agent):
+        return web.created()
 
     def GET(self, agent):
-        pass
+        return web.ok()
 
     def DELETE(self, agent):
         print 'delete %s' % agent
@@ -34,21 +34,22 @@ class AgentAction:
         """
         :param action: speedup, slowdown, start, stop, strategy
         """
-        pass
+        print agent, action
+        return web.ok()
 
 class Handlers:
     def GET(self):
-        pass
+        return web.ok()
 
 class Handler:
-    def POST(self):
-        pass
+    def POST(self, handler):
+        return web.created()
 
     def GET(self, handler):
-        pass
+        return web.ok()
 
     def DELETE(self, handler):
-        pass
+        return web.ok()
 
 def run(*args, **kwargs):
     app = web.application(urls, globals(), *args, **kwargs)
