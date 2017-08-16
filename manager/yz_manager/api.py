@@ -6,6 +6,8 @@ import logging
 
 LOG = logging.getLogger()
 
+from agent_views import agent_view
+
 urls = (
     '/api/agents', 'Agents',
     '/api/agent/(\w*)', 'Agent',
@@ -20,13 +22,18 @@ class Agents:
 
 class Agent:
     def POST(self, agent):
-        return web.created()
+        info = web.input()
+        re = agent_view.register_agent(info)
+        if re['success']:
+            return web.created()
+        else:
+            return web.badrequest(message=re['reason'])
 
     def GET(self, agent):
         return web.ok()
 
     def DELETE(self, agent):
-        print 'delete %s' % agent
+        LOG.debug('delete %s' % agent)
         return web.ok()
 
 class AgentAction:
@@ -34,7 +41,7 @@ class AgentAction:
         """
         :param action: speedup, slowdown, start, stop, strategy
         """
-        print agent, action
+        LOG.debug("%s, %s" % (agent, action))
         return web.ok()
 
 class Handlers:

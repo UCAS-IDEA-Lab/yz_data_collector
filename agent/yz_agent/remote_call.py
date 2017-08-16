@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from common import do_get, do_post
-from settings import manager_url, upload_url, load_balance_strategy
+from settings import manager_url, upload_url, load_balance_strategy, \
+        agent_id
 from serialize.flume_msg_pb2 import FlumeMsgList
 
 import json
@@ -11,8 +12,11 @@ import random
 LOG = logging.getLogger()
 
 def register_myself():
-    url = manager_url + '/api/agent'
-    data = {}
+    url = manager_url + '/api/agent/'
+    data = {
+        'id': agent_id,
+        'addr': '127.0.0.1'
+    }
     return do_post(url, data)
 
 # tmp_timer = 0

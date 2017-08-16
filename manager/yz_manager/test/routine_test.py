@@ -11,7 +11,7 @@ from yz_manager.routine import PingRoutine
 class TestRoutine(unittest.TestCase):
 
     def test_ping_routine(self):
-        ping = PingRoutine('PingRoutine', 1, 1)
+        ping = PingRoutine('PingRoutine', 1, 2)
         ping.start()
         time.sleep(10)
         ping.stop()

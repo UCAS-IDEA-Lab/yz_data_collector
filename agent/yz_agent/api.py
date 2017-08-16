@@ -38,7 +38,7 @@ class Strategy:
 
 class Ping:
     def GET(self):
-        pass
+        return web.ok(data='{"volume":30.2}')
 
 class Report:
     def POST(self):

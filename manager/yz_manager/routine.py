@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from common import MyThread
+from agent_views import agent_view
 
 import time
 import abc
+import logging
+
+LOG = logging.getLogger()
 
 class Routine(MyThread):
     __metaclass__ = abc.ABCMeta
@@ -25,6 +29,6 @@ class Routine(MyThread):
 class PingRoutine(Routine):
     
     def _rouine_job(self):
-        # TODO: use co-routine to ping multi-agents
-        print "Ping agent"
+        LOG.debug("Ping agent")
+        agent_view.ping_agents()
 

@@ -5,6 +5,7 @@ import random
 import re
 
 # Agent Configuration 
+agent_id = 'unique_1'
 api_port = '36563'
 batch = 1000
 data_path = '/var/log/yz'

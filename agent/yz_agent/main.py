@@ -32,10 +32,10 @@ LOG = logging.getLogger(__name__)
 
 def main():
     # TODO: Register first
-    # ret = register_myself()
-    # if not ret['success']:
-        # LOG.error(ret['data'])
-        # sys.exit(1)
+    ret = register_myself()
+    if not ret['success']:
+        LOG.error(ret['data'])
+        sys.exit(1)
 
     # Start Agent
     exp_agent = ExpAgent('ExpAgent', 1)
