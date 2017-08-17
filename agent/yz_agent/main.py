@@ -47,7 +47,7 @@ def main():
     # Start API
     sys.argv.append(api_port)
     sys.argv[1] = api_port
-    api_server.run()
+    api_server.run(exp=exp_agent, exp_state=exp_state_agent)
 
 if __name__ == '__main__':
     main()

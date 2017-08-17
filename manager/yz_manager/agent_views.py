@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import json
 import MySQLdb
 import logging
 import eventlet
@@ -52,15 +53,49 @@ class AgentView(object):
         self._agent_list[info.id] = info.addr
         return {'success': True}
 
+    def unregister_agent(self, agent_id):
+        if not self._agent_list.has_key(agent_id):
+            return {
+                'success': False,
+                'reason': 'Agent %s was not registered.' % agent_id
+            }
+
+        cur = self.db.cursor()
+        re = cur.execute("delete from agent_manager where id='%s'" % agent_id)
+        self.db.commit()
+        del self._agent_list[agent_id]
+        return {'success': True}
+
     def ping_agents(self):
 
         def __ping(args):
-            return args[0], urllib2.urlopen(args[1]).read()
+            try:
+                re = urllib2.urlopen(args[1]).read()
+                return {
+                    'success': True,
+                    'id': args[0],
+                    'info': re
+                }
+            except Exception, e:
+                LOG.error(e)
+                return {
+                    'success': False,
+                    'id': args[0],
+                    'info': e
+                }
         
         addrs = [(k, "http://%s:%s/api/ping" % (v, agent_api_port)) \
                 for k, v in self._agent_list.items()]
-        for re in self._pool.imap(__ping, addrs):
-            LOG.debug(re)
+        cur = self.db.cursor()
+        for ret in self._pool.imap(__ping, addrs):
+            LOG.debug(ret)
+            if not ret['success']:
+                self.unregister_agent(ret['id'])
+
+            info = json.loads(ret['info'])
+            cur.execute("update agent_manager set volume=%f where id='%s'" \
+                    % (info['volume'], ret['id']))
+        self.db.commit()
    
 agent_view = AgentView()
 

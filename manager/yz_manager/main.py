@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from settings import log_file_path, log_level, api_port
+from settings import log_file_path, log_level, api_port, ping_interval
 import api as api_server
+from routine import PingRoutine
 
 import sys
 import logging
@@ -28,6 +29,10 @@ logging.getLogger('').addHandler(console)
 LOG = logging.getLogger(__name__)
 
 def main():
+    # Start Routines
+    ping_routine = PingRoutine('PingRoutine', 1, ping_interval)
+    ping_routine.start()
+
     # Start API
     sys.argv.append(api_port)
     sys.argv[1] = api_port

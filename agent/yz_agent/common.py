@@ -4,6 +4,7 @@
 from threading import Thread, Condition
 import logging
 import abc
+import time
 
 LOG = logging.getLogger()
 
@@ -93,6 +94,18 @@ def do_get(url, **kwarg):
         LOG.error("GET %s: %s" % (url, e))
     return ret
 
+__last = time.time()
+def calc_post_volume(func):
+    def wrapper(url, data, **kw):
+        re = func(url, data, **kw)
+        if re['success']:
+            now = time.time()
+            re['volume'] = round(float(len(data)) / (now-__last), 2)
+        __last = now
+        return re
+    return wrapper
+
+@calc_post_volume
 def do_post(url, data, **kwarg):
     try:
         re = client.post(url, data=data, timeout=2, **kwarg)

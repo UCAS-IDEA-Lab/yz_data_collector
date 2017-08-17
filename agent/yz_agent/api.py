@@ -3,6 +3,7 @@
 import web
 import json
 import logging
+import random
 
 LOG = logging.getLogger()
 
@@ -38,13 +39,18 @@ class Strategy:
 
 class Ping:
     def GET(self):
-        return web.ok(data='{"volume":30.2}')
+        return '{"volume":%.2f}' % (exp_agent.volume+exp_state_agent.volume)
 
 class Report:
     def POST(self):
         pass
 
+exp_agent = None
+exp_state_agent = None
 def run(*args, **kwargs):
+    exp_agent = kwargs['exp']
+    exp_state_agent = kwargs['exp_state']
+
     app = web.application(urls, globals(), *args, **kwargs)
     app.run()
 

@@ -29,6 +29,6 @@ class Routine(MyThread):
 class PingRoutine(Routine):
     
     def _rouine_job(self):
-        LOG.debug("Ping agent")
+        LOG.debug("Ping agents")
         agent_view.ping_agents()
 

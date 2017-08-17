@@ -25,6 +25,7 @@ class Agent(MyThread):
         """
         _file_name: data file's name, e.g. "2017/04/04/${data_type}/00044"
         _offset: offset inside the data file
+        _volume: volume of this agent
         """
         LOG.info('Initialize Agent %s-%d' % (name, no))
         super(Agent, self).__init__(name, no)
@@ -32,6 +33,7 @@ class Agent(MyThread):
         self._rec_fd, self._data_file_name, self._offset = self._rec_init()
         self._data_fd = self._data_file_init()
         self._delay = 0
+        self._volume = 0
     
     def __del__(self):
         LOG.info('Release Agent %s-%d' % (self.name, self.threadID))
@@ -41,6 +43,10 @@ class Agent(MyThread):
     @property
     def interval(self):
         return self._delay
+
+    @property
+    def volume(self):
+        return self._volume
 
     def _rec_init(self):
         """
@@ -144,6 +150,7 @@ class Agent(MyThread):
                 if ret['success']:
                     _ += msg_num
                     self._offset += msg_num
+                    self._volume = ret['volume']
                     # LOG.debug('Message send, offset: %5d' % self._offset)
                     if file_end:
                         LOG.debug('Handle the end of a data file')

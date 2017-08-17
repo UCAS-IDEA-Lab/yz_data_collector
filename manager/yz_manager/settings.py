@@ -6,7 +6,9 @@ import re
 
 # Manager Configuration 
 api_port = '45954'
+ping_interval = 5
 
+# DB Configuration
 mysql_addr = 'localhost'
 mysql_port = 3306
 mysql_user = 'root'
