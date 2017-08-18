@@ -5,6 +5,8 @@ import json
 import logging
 import random
 
+from agent import exp_agent, exp_state_agent
+
 LOG = logging.getLogger()
 
 urls = (
@@ -45,12 +47,7 @@ class Report:
     def POST(self):
         pass
 
-exp_agent = None
-exp_state_agent = None
 def run(*args, **kwargs):
-    exp_agent = kwargs['exp']
-    exp_state_agent = kwargs['exp_state']
-
     app = web.application(urls, globals(), *args, **kwargs)
     app.run()
 

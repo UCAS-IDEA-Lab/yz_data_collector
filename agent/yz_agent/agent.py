@@ -34,6 +34,7 @@ class Agent(MyThread):
         self._data_fd = self._data_file_init()
         self._delay = 0
         self._volume = 0
+        self._timestramp = time.time()
     
     def __del__(self):
         LOG.info('Release Agent %s-%d' % (self.name, self.threadID))
@@ -46,6 +47,9 @@ class Agent(MyThread):
 
     @property
     def volume(self):
+        """
+        :return: KB/s
+        """
         return self._volume
 
     def _rec_init(self):
@@ -133,8 +137,13 @@ class Agent(MyThread):
         """
         Get data from data file.
         """
+        def __calc_volume(ts, v):
+            ts_now = time.time()
+            return ts_now, round(float(v)/(ts_now-ts)/1024, 2)
+
         _ = 0
         while _ < batch:
+            send_data_size = 0
             lines = self._data_fd.readlines(msg_batch)
             msg_num = len(lines)
             if msg_num == 0:
@@ -150,7 +159,7 @@ class Agent(MyThread):
                 if ret['success']:
                     _ += msg_num
                     self._offset += msg_num
-                    self._volume = ret['volume']
+                    send_data_size = ret['data_size']
                     # LOG.debug('Message send, offset: %5d' % self._offset)
                     if file_end:
                         LOG.debug('Handle the end of a data file')
@@ -159,6 +168,8 @@ class Agent(MyThread):
                     LOG.debug('Send failed, seek to last line')
                     size = reduce(lambda x, y: x+y, [len(line) for line in lines])
                     self._data_fd.seek(-size, 1)
+
+            self._timestramp, self._volume = __calc_volume(self._timestramp, send_data_size)
         # Make sure at most a batch size of data re-transmitted
         self._update_record()
         LOG.debug('%d message send' % _)
@@ -215,4 +226,7 @@ class ErrorHandleAgent(Agent):
 
     def _rec_init(self):
         pass
+
+exp_agent = ExpAgent('ExpAgent', 1)
+exp_state_agent = ExpStateAgent('ExpStateAgent', 1)
 

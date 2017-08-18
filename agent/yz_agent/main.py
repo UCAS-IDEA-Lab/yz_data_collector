@@ -3,7 +3,7 @@
 from settings import log_file_path, log_level, api_port
 from remote_call import register_myself
 import api as api_server
-from agent import ExpAgent, ExpStateAgent, ErrorHandleAgent
+from agent import exp_agent, exp_state_agent
 
 import logging
 import sys
@@ -38,8 +38,8 @@ def main():
         sys.exit(1)
 
     # Start Agent
-    exp_agent = ExpAgent('ExpAgent', 1)
-    exp_state_agent = ExpStateAgent('ExpStateAgent', 1)
+    # exp_agent = ExpAgent('ExpAgent', 1)
+    # exp_state_agent = ExpStateAgent('ExpStateAgent', 1)
     
     exp_agent.start()
     exp_state_agent.start()
@@ -47,7 +47,7 @@ def main():
     # Start API
     sys.argv.append(api_port)
     sys.argv[1] = api_port
-    api_server.run(exp=exp_agent, exp_state=exp_state_agent)
+    api_server.run()
 
 if __name__ == '__main__':
     main()
