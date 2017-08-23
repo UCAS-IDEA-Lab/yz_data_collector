@@ -7,7 +7,7 @@ import abc
 import time
 import sys
 
-LOG = logging.getLogger()
+LOG = logging.getLogger(__name__)
 
 class MyThread(Thread):
     __metaclass__ = abc.ABCMeta

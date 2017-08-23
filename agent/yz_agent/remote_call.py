@@ -9,7 +9,7 @@ import json
 import logging
 import random
 
-LOG = logging.getLogger()
+LOG = logging.getLogger(__name__)
 
 def register_myself():
     url = manager_url + '/api/agent/'

@@ -18,7 +18,7 @@ urls = (
 
 class Agents:
     def GET(self):
-        return web.ok()
+        return agent_view.list_agents()
 
 class Agent:
     def POST(self, agent):
@@ -30,7 +30,7 @@ class Agent:
             return web.badrequest(message=re['reason'])
 
     def GET(self, agent):
-        return web.ok()
+        return agent_view.show_agent(agent)
 
     def DELETE(self, agent):
         LOG.debug('delete %s' % agent)
@@ -42,7 +42,7 @@ class AgentAction:
         :param action: speedup, slowdown, start, stop, strategy
         """
         LOG.debug("%s, %s" % (agent, action))
-        return web.ok()
+        return agent_view.agent_action(agent, action)
 
 class Handlers:
     def GET(self):

@@ -13,7 +13,7 @@ import json
 from os import path
 from google.protobuf import json_format as jf
 
-LOG = logging.getLogger()
+LOG = logging.getLogger(__name__)
 
 class Agent(MyThread):
 
