@@ -154,7 +154,10 @@ class Agent(MyThread):
                 if lines[-1].startswith('END'):
                     lines.pop()
                     file_end = True
-                ret = upload(map(self._transform, lines, range(len(lines))[::-1]), self.data_type)
+                # TODO: wrong number calculate
+                # ret = upload(map(self._transform, lines, range(len(lines))[::-1]), self.data_type)
+                ret = upload(map(self._transform, lines, \
+                        [i+1 for i in range(len(lines))]), self.data_type)
                 # LOG.debug('Message send, ret: %s' % ret)
                 if ret['success']:
                     _ += msg_num
@@ -180,7 +183,9 @@ class Agent(MyThread):
         """
         try:
             pb = self.serialize_class()
-            pb.id = '%s#%d' % (self._id_prefix, self._offset-sub_off)
+            # TODO: wrong number calculate
+            # pb.id = '%s#%d' % (self._id_prefix, self._offset-sub_off)
+            pb.id = '%s#%d' % (self._id_prefix, self._offset+sub_off)
             pb.data = raw_str
             pb.type = self.data_type
             pb.usage = 'upload'

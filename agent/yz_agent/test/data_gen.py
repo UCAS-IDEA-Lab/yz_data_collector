@@ -122,6 +122,10 @@ def _gen_data(file_name, line_no, opt):
     global DATE
     date = opt.date
     while True:
+        if int(file_name) >= int(opt.end):
+            print "The max number(%d) of data file reached" % int(opt.end)
+            break
+
         file_now = '/'.join([data_path, date, DATA_TYPE[opt.datatype], file_name])
         print 'Writing data to %s...' % file_now
         with open(file_now, 'ab+') as fd:
@@ -131,9 +135,6 @@ def _gen_data(file_name, line_no, opt):
                 line_no += 1
             fd.write('END\n')
 
-        if int(file_name) == opt.end:
-            print "End(%d) file reached" % opt.end
-            break
         date = datetime.datetime.now().strftime('%Y/%m/%d')
         if date != opt.date:
             file_name, line_no = _check_and_create(date, DATA_TYPE[options.datatype])
@@ -157,7 +158,7 @@ def main():
             default=100000, \
             help="The max line in a data file")
     parser.add_option('-e', '--end', dest='end', \
-            default=1000, \
+            default=00010, \
             help="The max number of data file")
     options, args = parser.parse_args()
 
