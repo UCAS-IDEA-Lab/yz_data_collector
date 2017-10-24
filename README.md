@@ -1,4 +1,4 @@
-# 大数据采集平台原型系统
+# 大数据采集原型系统
 
 ## 企业端代理引擎
 Running on forward machines
