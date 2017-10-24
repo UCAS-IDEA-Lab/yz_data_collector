@@ -1,40 +1,41 @@
-# Manager
+# 管理端软件
 
-## Environment
-CentOS 7
+## 运行环境
+Linux CentOS 7
 
-## Setup
+## 安装
 ```shell
 ./setup.sh
 ```
 See "Setup successfully" means finished.
 
-## Update(code or settings):
+## 升级(代码或配置）
+
 ```shell
 python setup.py install
 ```
 
-## Run
+## 执行
 
-### Start && Check
+### 启动 && 检查
 ```shell
 systemctl start yz_manager
 systemctl status yz_manager
 ```
 
-### Test
+### 测试
 ```shell
 ```
 
-### Stop && Check
+### 停机 && 节点
 ```shell
 systemctl stop yz_manager
 systemctl status yz_manager
 ```
 
-### Log
+### 日志
 Default is stored at /var/log/yz_manager.log.
 
-### Configuration
+### 配置
 Configuration file is located at /etc/yz_manager.conf
 
