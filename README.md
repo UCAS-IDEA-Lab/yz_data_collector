@@ -1,13 +1,13 @@
-# Data Collector
+# 大数据采集平台原型系统
 
-## Agent
+## 企业端代理引擎
 Running on forward machines
 
-## Manager
+## 数据中心控制引擎
 Running on control node
 
-## Protos
+## 协议和消息格式
 Message format defined for using protocol buffer
 
-## Flume-protobuf-handler
+## Flume-协议缓存处理引擎
 Flume source plugin for handling messages serialized by protobuf
