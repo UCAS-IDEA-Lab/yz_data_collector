@@ -1,41 +1,41 @@
-# Agent
+# 企业端数据采集代理
 
-## Environment
-CentOS 7
+## 运行环境
+Linux CentOS 7
 
-## Setup
+## 安装过程
 ```shell
 ./setup.sh
 ```
-See "Setup successfully" means finished.
+看到 "Setup successfully" 意味安装成功。
 
-## Update(code or settings):
+## 升级过程 (代码或配置）
 ```shell
 python setup.py install
 ```
 
-## Run
+## 运行代理
 
-### Start && Check
+### 启动 && 检查
 ```shell
 systemctl start yz_agent
 systemctl status yz_agent
 ```
 
-### Test
+### 系统测试
 ```shell
 yz_test_data_gen -h
 ```
 
-### Stop && Check
+### 停机和检查
 ```shell
 systemctl stop yz_agent
 systemctl status yz_agent
 ```
 
-### Log
+### 日志文件
 Default is stored at /var/log/yz_agent.log.
 
-### Configuration
+### 配置文件
 Configuration file is located at /etc/yz_agent.conf
 
